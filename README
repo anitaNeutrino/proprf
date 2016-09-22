@@ -1,0 +1,36 @@
+Shared library to do various radio propagation calculations, such as refraction angle, expected CR polarization angle at a column density for a shower, chord through Earth, etc. 
+
+Cosmin Deaconu <cozzyd@kicp.uchicago.edu> 
+
+Contains stuff including: 
+  - Magnetic field lookup using modified version of NGDC's geomag70.c 
+  - Computation of column depth at any altitude and zenith using Chapman's function (see Grieder's Cosmic Rays at Earth pg 33 (eq 1.57)). 
+  - Atmosphere model 
+  - Method to compute Bfield polarization of upgoing "skimming" CR showers at wanted column depth
+    - Converts, hopefully correctly, the direction of the cosmic ray in payload coordinates to global coordinates
+    - Starts at payload, calculates column depth at payload of given zenith, then goes along track to find where column density is equal to wanted value
+    - Looks up B-field using modification of geomag70 to be a function instead of a program 
+    - Converts B-field to global coordinates (hopefully correctly!) 
+    - Computes angle of B x cosmic ray direction relative to up of payload 
+  - Earth Density Model
+  - RF refraction model 
+
+
+How to use: 
+   - Requires eventReaderRoot (-lAnitaEvent) 
+   - compile
+   - PROPRF_DATA_DIR needs to be defined to the data directory 
+   - To use on CR skimmers from paper, do something like 
+         PROPRF_DATA_DIR=`pwd`/dir root macros/do_events.C
+
+
+
+
+
+TODO: 
+  Add support for upgoing tau's and reflected cosmic rays 
+  Add Cmakelists... maybe.
+
+
+
+
