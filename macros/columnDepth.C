@@ -3,7 +3,6 @@
 void columnDepth(double alt = 20) 
 {
 
-gSystem->Load("lib/libcrpol.so"); 
 
   TGraph * g = new TGraph(100); 
 

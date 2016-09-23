@@ -1,7 +1,6 @@
 void do_events() 
 {
 
-  gSystem->Load("lib/libcrpol.so"); 
 
   TFile f("data/upgoing.root"); 
 
