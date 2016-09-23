@@ -1,6 +1,6 @@
 CC=gcc
 CXX=g++
-CXXFLAGS=`root-config --cflags` -I$(ANITA_UTIL_INSTALL_DIR)/include -g -fPIC
+CXXFLAGS=`root-config --cflags` -I$(ANITA_UTIL_INSTALL_DIR)/include -g -fPIC -Wall
 CFLAGS=-g -fPIC
 LDFLAGS= `root-config --ldflags` -L$(ANITA_UTIL_INSTALL_DIR)/lib
 LIBS=`root-config --glibs` -g -Wl,-z,defs -lMathMore -lRootFftwWrapper -lAnitaEvent
@@ -13,7 +13,7 @@ BINDIR=bin
 .PHONY: clean install all
 
 
-OBJS := $(addprefix $(BUILDDIR)/, crpol.o atmos.o geomag70_mod.o dens.o dict.o)
+OBJS := $(addprefix $(BUILDDIR)/, crpol.o atmos.o geomag70_mod.o dens.o refrac.o proprf_dict.o)
 INCLUDES := $(addprefix $(INCLUDEDIR)/, $(shell ls $(INCLUDEDIR)))
 
 LINKLIBNAME=proprf
@@ -26,6 +26,7 @@ all: $(LIBNAME)
 $(LIBNAME): $(OBJS) | $(LIBDIR)
 	@echo Building shared library $@
 	@$(CXX) $(SOFLAGS) $(LDFLAGS) $(OBJS) $(LIBS) $(GLIBS) -shared -o $@
+	cp $(BUILDDIR)/*.pcm  $(LIBDIR)
 
 
 $(OBJS): | $(BUILDDIR)
@@ -54,7 +55,7 @@ $(BUILDDIR)/%.o: build/%.cc $(INCLUDES) Makefile | $(BUILDDIR)
 	$(CXX)  -I../include -I./ $(CXXFLAGS) -o $@ -c $< 
 
 
-$(BUILDDIR)/dict.cc: $(INCLUDES) LinkDef.h | $(BUILDDIR)
+$(BUILDDIR)/proprf_dict.cc: $(INCLUDES) LinkDef.h | $(BUILDDIR)
 	@echo Running rootcint
 	rootcint  -f $@ -c -p -I$(ANITA_UTIL_INSTALL_DIR)/include $(INCLUDES) LinkDef.h
 
@@ -64,7 +65,7 @@ ifndef ANITA_UTIL_INSTALL_DIR
 endif 
 	install -d $(ANITA_UTIL_INSTALL_DIR)/lib 
 	install -d $(ANITA_UTIL_INSTALL_DIR)/include 
-	install -c -m 755 $(LIBNAME)(ANITA_UTIL_INSTALL_DIR)/lib  
+	install -c -m 755 $(LIBNAME) $(ANITA_UTIL_INSTALL_DIR)/lib  
 	install -c -m 644 $(INCLUDES) $(ANITA_UTIL_INSTALL_DIR)/include 
 clean: 
 	rm -rf build
